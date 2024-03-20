@@ -1,0 +1,88 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+const int N = 5;
+int main() {
+	string owners[5] = { "A","B","C","D","E"};
+	string dogs[5] = { "1","2","3","4","5"};
+	int pl[5][5];
+	int plinverse[5][5];
+	int dl[5][5];
+	cout << "请输入公司对求职者好感度排序表" << endl;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			cin >> pl[i][j];
+			pl[i][j]--;
+			plinverse[i][pl[i][j]] = j;
+		}
+	}
+	cout << "请输入求职者对公司好感度排序表" << endl;
+	char m;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			cin >> m;
+			switch (m)
+			{
+			case('A'): {
+				dl[i][j] = 0;
+			}break;
+			case('B'): {
+				dl[i][j] = 1;
+			}break;
+			case('C'): {
+				dl[i][j] = 2;
+			}break;
+			case('D'): {
+				dl[i][j] = 3;
+			}break;
+			case('E'): {
+				dl[i][j] = 4;
+			}break;
+			default:
+				break;
+			}
+		}
+	}
+	int S[5] = { -1,-1,-1,-1,-1 }; //各个公司配对的求职者表
+	int c[5] = { 0,0,0,0,0 };//被拒绝后的第一个选择
+	int dS[5] = { -1,-1,-1,-1,-1 }; //求职者配对的公司表
+	while (dS[0] == -1 || dS[1] == -1 || dS[2] == -1 || dS[3] == -1||dS[4]==-1) {
+		for (int i = 0; i < 5; i++) {
+			if (dS[i] != -1) {
+				continue;
+			}
+			int a = 0;
+			if (S[dl[i][c[i]]] == -1) {
+				S[dl[i][c[i]]] = i;
+				dS[i] = dl[i][c[i]];
+				c[i]++;
+			}
+			else if (plinverse[dl[i][c[i]]][i] < plinverse[dl[i][c[i]]][S[dl[i][c[i]]]]) {
+				dS[S[dl[i][c[i]]]] = -1;
+				S[dl[i][c[i]]] = i;
+				dS[i] = dl[i][c[i]];
+				c[i]++;				
+			}
+			else {
+				c[i]++;
+			}
+		}
+	}
+	cout << "检验是否为完美匹配:" << endl;
+	bool I = 1;
+	for (int i = 0; i < N-1; i++) {
+		for (int j = i + 1; j < N; j++) {
+			if (S[i] == S[j]) {
+				cout << "不是完美匹配" << endl;
+				I = 0;
+			}
+		}
+	}
+	if (I) {
+		cout<<"是完美匹配" << endl; 
+	}
+	cout << "最终配对为：" << endl;
+	for (int i = 0; i < 5; i++) {
+		cout << owners[i] << '+' << dogs[S[i]] << endl;
+	}
+}

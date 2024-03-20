@@ -1,0 +1,70 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+/*
+int main() {
+	string owners[4] = { "张三","李四","王五","赵六" };
+	string dogs[4] = { "博美","泰迪","松狮","杜宾" };
+	int pl[4][4];
+	int dl[4][4];
+	cout << "请分别输入张三，李四，王五，赵六对博美，泰迪，松狮，杜宾的喜爱排名" << endl;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			cin >> pl[i][j];
+			pl[i][j]--;
+		}
+	}
+	cout << "请分别输入博美，泰迪，松狮，杜宾对张三，李四，王五，赵六的喜爱排名" << endl;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			cin >> dl[i][j];
+			dl[i][j]--;
+		}
+	}
+	int S[4] = { -1,-1,-1,-1 };
+	int c[4] = { 0,0,0,0 };
+	int dS[4] = { -1,-1,-1,-1 };
+	while (S[0] == -1 || S[1] == -1 || S[2] == -1 || S[3] == -1) {
+		for (int i = 0; i < 4; i++) {
+			if (S[i] != -1) {
+				continue;
+			}
+			int a = 0;
+			while (pl[i][a] != c[i]) {
+				a++;
+			}
+			if (dS[a] == -1) {
+				dS[a] = i;
+				S[i] = a;
+				c[i]++;
+			}
+			else if (dl[a][i] < dl[a][dS[a]]) {
+				S[dS[a]] = -1;
+				dS[a] = i;
+				S[i] = a;
+				c[i]++;
+			}
+			else {
+				c[i]++;
+			}
+		}
+	}
+
+	cout << "最终配对为：" << endl;
+	for (int i = 0; i < 4; i++) {
+		cout << owners[i] << '+' << dogs[S[i]] << endl;
+	}
+}
+*/
+
+1 2 3 5 4
+3 1 2 4 5
+4 3 1 5 2
+2 4 5 3 1
+5 2 3 1 4
+
+B A D C E
+E B A D C
+A C E B D
+C B D E A
+D E A B C

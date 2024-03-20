@@ -1,0 +1,64 @@
+#include<iostream>
+using namespace std;
+
+class BinaryHeap {
+private:
+	int a[20];
+	int length = 0;
+public:
+	BinaryHeap(int arr[]);
+	void Insert(int n);
+	void Rank();
+};
+void BinaryHeap::Insert(int n) {
+	a[length] = n;
+	int child = length;
+	length++;
+	int parent = (child - 1) / 2;
+	while (child > 0 && a[parent] < n) {
+		a[child] = a[parent];
+		a[parent] = n;
+		child = parent;
+		parent = (child - 1) / 2;
+	}
+}
+BinaryHeap::BinaryHeap(int arr[20]) {
+	for (int i = 0; i < 20; i++) {
+		Insert(arr[i]);
+	}
+}
+void BinaryHeap::Rank() {
+	for (int i = 1; i<length; i++) {
+		int tmp = a[length-i];
+		a[length - i] = a[0];
+		a[0]=tmp;
+		
+		int parent = 0;
+		int child = 2 * parent + 1;
+		while (child < length-i) {
+			// 如果右孩子节点比左孩子节点大，则定位到右孩子节点
+			if (child + 1 < length-i && a[child] < a[child + 1]) child++;
+			// 如果父节点的值大于等于孩子节点的值，结束下沉操作
+			if (tmp >= a[child]) break;
+
+			// 单向赋值
+			a[parent] = a[child];
+			// 将父节点和孩子节点向下移
+			parent = child;
+			child = parent * 2 + 1;
+		}
+		a[parent] = tmp;
+	}
+	for (int i = 0; i < length; i++) {
+		cout << a[i] << " ";
+	}
+}
+int main() {
+	int a[20] = { 20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1 };
+	int b[20] = { 1, 34, 56, 24, 35, 78, 100, 23, 45, 56, 78, 13, 45, 67, 78, 99, 131, 1, 2, 3 };
+	for (int i = 0; i < 20; i++) {
+		//cin >> b[i];
+	}
+	BinaryHeap B(b);
+	B.Rank();
+}
