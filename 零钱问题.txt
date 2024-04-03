@@ -1,0 +1,19 @@
+#include<iostream>
+using namespace std;
+int main() {
+	int pay = 537;
+	int money[6] = {1,5,10,20,50,100};
+	int num[6] = { 5,7,4,8,10,4 };
+	int count = 0;
+	while (pay != 0) {
+		for (int i = 5; i >= 0; i--) {
+			if ((pay - money[i] >= 0)&&num[i]!=0) {
+				pay = pay - money[i];
+				count++;
+				num[i]--;
+				break;
+			}
+		}	
+	}
+	cout << count;
+}
