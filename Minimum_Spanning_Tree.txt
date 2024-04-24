@@ -1,0 +1,224 @@
+#include<iostream>
+#include<cmath>
+#include<algorithm>
+#include<string>
+using namespace std;
+struct V {
+	int n1, n2;
+	int w;
+	bool a = 0;
+};
+class Graph {
+	
+	V v[12];
+	int minTree[6][2];
+	int Vc;
+	int minC;
+public:
+	bool nodes[7];
+	Graph() {
+		for (int i = 0; i < 7; i++) {
+			nodes[i] = 0;
+		}
+		v[0].n1 = 0; v[0].n2 = 1; v[0].w = 3;
+		v[1].n1 = 0; v[1].n2 = 2; v[1].w = 4;
+		v[2].n1 = 0; v[2].n2 = 3; v[2].w = 2;
+		v[3].n1 = 1; v[3].n2 = 3; v[3].w = 1;
+		v[4].n1 = 1; v[4].n2 = 4; v[4].w = 3;
+		v[5].n1 = 2; v[5].n2 = 3; v[5].w = 2;
+		v[6].n1 = 2; v[6].n2 = 5; v[6].w = 6;
+		v[7].n1 = 3; v[7].n2 = 4; v[7].w = 4;
+		v[8].n1 = 3; v[8].n2 = 5; v[8].w = 1;
+		v[9].n1 = 3; v[9].n2 = 6; v[9].w = 3;
+		v[10].n1 = 4; v[10].n2 = 6; v[10].w = 1;
+		v[11].n1 = 5; v[11].n2 = 6; v[11].w = 4;
+		Vc = 0;
+		minC = 0;
+		for (int i = 0; i < 6; i++) {
+			minTree[i][0] = -1;
+			minTree[i][1] = -1;
+		}
+
+	}//初始化图
+	int minV();//用来找目前没添加进入树的最小边
+	void ChooseV(int index);//将边添到最小树中
+	bool IsC(int index);//判断是否构成圈
+	bool IsTree();//判断是否形成树
+	V GetV(int idex);//获取边
+	void CheckedV(int index);//将边更新为已检查
+	void ShowTree();
+	int* n_v(int n);
+};
+V Graph::GetV(int index) {
+	return v[index];
+}
+void Graph::CheckedV(int index) {
+	v[index].a = 1;
+}
+int Graph::minV() {
+	int i = 0;
+	while (v[i].a) {
+		i++;
+	}
+	int min = i;
+	for (int j = i + 1; j < 12; j++) {
+		if ((v[j].w < v[min].w)&&!v[j].a) {
+			min = j;
+		}
+	}
+	return min;
+}
+void Graph::ChooseV(int index) {
+	nodes[v[index].n1] = 1;
+	nodes[v[index].n2] = 1;
+	minTree[Vc][0] = v[index].n1;
+	minTree[Vc][1] = v[index].n2;
+	Vc++;
+	minC += v[index].w;
+	v[index].a = 1;
+}
+bool Graph::IsC(int index) {
+	if (!nodes[v[index].n1] || !nodes[v[index].n2]) {
+		//return 0;
+	}
+	int du[7] = { 0 };
+	du[v[index].n1]++;
+	du[v[index].n2]++;
+	for (int i = 0; i < Vc; i++) {
+		du[minTree[i][0]]++;
+		du[minTree[i][1]]++;
+	}
+	while (true) {
+		for (int i = 0; i < 7; i++) {
+			if (du[i] == 1) {
+				du[i]--;
+				if (v[index].n1 == i) {
+					du[v[index].n2]--;
+				}
+				else if (v[index].n2 == i) {
+					du[v[index].n1]--;
+				}
+				else {
+					for (int j = 0; j < 6; j++) {
+						if (minTree[j][0] == i) {
+							if (du[minTree[j][1]] > 0) {
+								du[minTree[j][1]]--;
+							}
+							break;
+						}
+						else if (minTree[j][1] == i) {
+							if (du[minTree[j][0]] > 0) {
+								du[minTree[j][0]]--;
+							}
+							
+							break;
+						}
+					}
+				}
+				
+			}
+		}
+		int c0 = 0;
+		for (int i = 0; i < 7; i++) {
+			if (du[i] <= 0) {
+				c0++;
+			}
+		}
+		if (c0==7) {
+			return 0;
+		}
+		int c = 0;
+		for (int i = 0; i < 7; i++) {
+			if (du[i] != 1) {
+				c++;
+			}
+		}
+		if (c == 7) {
+			return 1;
+		}
+	}
+	
+	
+}
+bool Graph::IsTree() {
+	int i = 0;
+	while (nodes[i]) {
+		i++;
+		if (i > 6) {
+			break;
+		}
+	}
+	if ((i == 7)&&Vc==6) {
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+void Graph::ShowTree() {
+	for (int i = 0; i < 6; i++) {
+		cout << 'V' << minTree[i][0]+1 << "-" << 'V' << minTree[i][1]+1<<endl;
+	}
+	cout <<"最小生成树的代价为" << minC;
+}
+int* Graph::n_v(int n) {
+	int* isvn=new int[12];
+	for (int i = 0; i < 12; i++) {
+		if (v[i].n1 == n || v[i].n2 == n) {
+			isvn[i] = 1;
+		}
+		else {
+			isvn[i] = 0;
+		}
+	}
+	return isvn;
+}
+void Kruskal() {
+	Graph G;
+	while (!G.IsTree()) {
+		int min;
+		min = G.minV();
+		if (G.IsC(min)) {
+			G.CheckedV(min);
+		}
+		else {
+			G.ChooseV(min);
+		}
+	}
+	G.ShowTree();
+}
+void Prime() {
+	Graph G;
+	G.nodes[0] = 1;
+	while (!G.IsTree()) {
+		int outv[12] = { 0 };
+		for (int i = 0; i < 7; i++) {
+			if (G.nodes[i]) {
+				int* isvn;
+				isvn = G.n_v(i);
+				for (int j = 0; j < 12; j++) {
+					if (isvn[j]) {
+						outv[j]++;
+					}
+				}
+			}
+		}
+		int min = 0;
+		for (int i = 1; i < 12; i++) {
+			if (outv[i] == 1) {
+				if (outv[min] != 1)min = i;
+				if (G.GetV(i).w < G.GetV(min).w) {
+					min = i;
+				}
+			}
+		}
+		G.ChooseV(min);
+	}
+	G.ShowTree();
+
+}
+int main() {
+	//Kruskal();
+	Prime();
+}
